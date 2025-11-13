@@ -18,11 +18,41 @@ type LocalProduct = {
   name_he: string;
   price: number;
 };
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+type ApiProduct = {
+  _id: string;
+  name: string;
+  description?: string;
+  price: number;
+  imageFile: string;
+  isTop: boolean;
+  featured?: boolean;
+};
 const Home = () => {
   const { language, t } = useLanguage();
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState({ features: false, products: false /* collections optional */ });
+const [productsApi, setProductsApi] = useState<ApiProduct[]>([]);
+const [loadingProducts, setLoadingProducts] = useState(false);
+
+useEffect(() => {
+  (async () => {
+    try {
+      setLoadingProducts(true);
+      const res = await fetch(`${API_URL}/products`);
+      const data: ApiProduct[] = await res.json();
+      // only active ones
+      const active = Array.isArray(data) ? data.filter(p => p.isTop) : [];
+      setProductsApi(active);
+    } catch {
+      setProductsApi([]);
+    } finally {
+      setLoadingProducts(false);
+    }
+  })();
+}, []);
+
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -180,41 +210,56 @@ const Home = () => {
       </section>
 
       {/* Products – images zoomed OUT */}
-      <section id="products" className="py-32 px-4 bg-black from-secondary/30 via-secondary/50 to-secondary/30">
-        <div className="container mx-auto">
-          <h2 className="text-5xl md:text-7xl font-heading font-bold mb-6 text-amber-400 text-center">
-            {language === "ar" ? "منتجاتنا المميزة" : "המוצרים המובילים שלנו"}
-          </h2>
-        </div>
+     {/* Products – images zoomed OUT */}
+<section id="products" className="py-32 px-4 bg-black from-secondary/30 via-secondary/50 to-secondary/30">
+  <div className="container mx-auto">
+    <h2 className="text-5xl md:text-7xl font-heading font-bold mb-6 text-amber-400 text-center">
+      {language === "ar" ? "منتجاتنا المميزة" : "המוצרים המובילים שלנו"}
+    </h2>
+  </div>
 
-        <div className="container mx-auto">
-          <p className="text-muted-foreground text-xl max-w-2xl mx-auto text-center mb-16">
-            {language === "ar" ? "اختيارات خاصة لعناية استثنائية بجمالك" : "בחירות מיוחדות לטיפול יוצא דופן ביופי שלך"}
-          </p>
+  <div className="container mx-auto">
+    <p className="text-muted-foreground text-xl max-w-2xl mx-auto text-center mb-16">
+      {language === "ar" ? "اختيارات خاصة لعناية استثنائية بجمالك" : "בחירות מיוחדות לטיפול יוצא דופן ביופי שלך"}
+    </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
-            {catalog.map((p, index) => (
+    {loadingProducts ? (
+      <p className="text-center text-muted-foreground">...</p>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
+        {(productsApi.length ? (productsApi.filter(p => p.featured).length ? productsApi.filter(p => p.featured) : productsApi) : catalog)
+          .slice(0, 6)
+          .map((p: any, index: number) => {
+            // When using API
+            const isApi = !!p._id;
+            const id = isApi ? p._id : p.id;
+            const name = isApi ? p.name : (language === "ar" ? p.name_ar : p.name_he);
+            const price = p.price;
+            const img = isApi ? `${API_URL}/assets/products/${p.imageFile}` : p.img;
+
+            return (
               <Card
-                key={p.id}
-                className={`group border-2px border-amber-400  luxury-card ${isVisible.products ? "animate-reveal-up" : "opacity-0"}`}
+                key={id}
+                className={`group border-2px border-amber-400 luxury-card ${isVisible.products ? "animate-reveal-up" : "opacity-0"}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {/* Centered box with padding to avoid crop */}
                 <div className="relative aspect-square flex items-center justify-center bg-background p-4">
                   <img
-                    src={p.img}
-                    alt={language === "ar" ? p.name_ar : p.name_he}
-                    className="w-full h-full object-fill scale-120 transition-transform duration-700 group-hover:scale-125"
+                    src={img}
+                    alt={name}
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/placeholder.svg"; }}
+                    className="w-full h-full object-fill scale-120 transition-transform duration-700 group-hover:scale-125 b-2 b-amber-400"
                   />
                 </div>
 
                 <CardContent className="p-8">
                   <h3 className="font-heading font-semibold text-xl mb-2">
-                    {language === "ar" ? p.name_ar : p.name_he}
+                    {name}
                   </h3>
                   <div className="flex items-center justify-between">
-                    <span className="text-3xl font-bold text-amber-400">{p.price} ₪</span>
-                    <Link to={`/product/${p.id}`}>
+                    <span className="text-3xl font-bold text-amber-400">{price} ₪</span>
+                    <Link to={`/product/${id}`}>
                       <Button size="sm" className="bg-amber-400">
                         {t("product.viewDetails")}
                       </Button>
@@ -222,13 +267,16 @@ const Home = () => {
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+            );
+          })}
+      </div>
+    )}
+  </div>
+</section>
+
 
       {/* Collections – now styled like Products */}
-      <section className="py-32 px-4 relative">
+      {/* <section className="py-32 px-4 relative">
         <div className="container mx-auto">
           <h2 className="text-5xl md:text-7xl font-heading font-bold mb-16 text-amber-400 text-center animate-fade-in">
             {language === "ar" ? "تسوقي حسب الاهتمامات" : "קנו לפי עניין"}
@@ -241,7 +289,6 @@ const Home = () => {
                 className={`group luxury-card ${isVisible.products ? "animate-reveal-up" : "opacity-0"}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {/* Same image container behavior as products */}
                 <div className="relative aspect-square flex items-center justify-center bg-background p-4">
                   <img
                     src={c.img}
@@ -267,12 +314,12 @@ const Home = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Benefits */}
       <section className="py-32 px-4">
         <div className="container mx-auto text-center">
-          <h2 className="text-5xl md:text-7xl font-heading font-bold mb-16 gradient-text">
+          <h2 className="text-5xl md:text-7xl font-heading font-bold mb-16 text-amber-400">
             {language === "ar" ? "لماذا تختارنا" : "למה לבחור בנו"}
           </h2>
           <div className="flex flex-wrap justify-center gap-8">
@@ -283,7 +330,7 @@ const Home = () => {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <CardContent className="p-8 flex flex-col items-center">
-                  <benefit.icon className="h-14 w-14 text-primary mb-6" />
+                  <benefit.icon className="h-14 w-14 text-amber-400 mb-6" />
                   <h3 className="font-heading font-semibold text-xl mb-3">{benefit.title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{benefit.desc}</p>
                 </CardContent>

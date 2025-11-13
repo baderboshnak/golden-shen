@@ -4,6 +4,7 @@ import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, ShoppingBag } from "lucide-react";
+import { checkoutOrder } from "@/lib/api";
 
 const Cart = () => {
   const { language, t } = useLanguage();
@@ -150,9 +151,24 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <Button className="w-full gold-glow mb-4">
-                  {c.checkout}
-                </Button>
+              {/* // in Cart page, near the Button "checkout" */}
+            <Button
+              className="w-full gold-glow mb-4"
+              onClick={async () => {
+                try {
+                  // You could show a loader/toast here
+                  const { orderId } = await checkoutOrder(); // from useCart()
+                  // redirect to thank-you page or orders page:
+                  // nav(`/order/${orderId}`)  // if you have such route
+                  alert(`Order placed: ${orderId}`);
+                } catch (e: any) {
+                  alert(e?.message || "Checkout failed");
+                }
+              }}
+            >
+              {c.checkout}
+            </Button>
+
 
                 <Link to="/shop">
                   <Button variant="outline" className="w-full border-primary/30 hover:border-primary">

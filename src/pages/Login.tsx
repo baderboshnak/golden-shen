@@ -68,9 +68,14 @@ const Login = () => {
 
       // Save token + user
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+              localStorage.setItem("user", JSON.stringify(data.user));
+        if (data.token) localStorage.setItem("token", data.token);
+        if (data.user)  localStorage.setItem("user", JSON.stringify(data.user));
 
-      nav("/");
+        // notify providers to re-fetch secured data (like cart)
+        window.dispatchEvent(new Event("auth:changed"));
+
+        nav("/");
     } catch (err) {
       console.error(err);
       setError(t.error);

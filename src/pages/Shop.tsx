@@ -1,19 +1,35 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { products } from "@/data/products";
 import { Star } from "lucide-react";
 
-type ProductType = typeof products[number];
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+type ApiCategory = { _id: string; name: string; icon?: string };
+type ApiProduct = {
+  _id: string;
+  name: string;
+  description?: string;
+  price: number;
+  stock?: number;
+  imageFile: string;              // e.g. "moisturizing-shampoo.jpg"
+  category?: ApiCategory;         // populated by backend
+  createdAt?: string;
+  badges?: string[];
+  rating?: { avg?: number; count?: number };
+};
 
 const Shop = () => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const [filter, setFilter] = useState<"all" | "hair" | "body" | "face">("all");
   const [sort, setSort] = useState<"featured" | "priceLow" | "priceHigh" | "newest">("featured");
+  const [items, setItems] = useState<ApiProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
 
   const content = {
     ar: {
@@ -50,31 +66,44 @@ const Shop = () => {
 
   const c = content[language as "ar" | "he"];
 
-  const filteredProducts: ProductType[] =
-    filter === "all" ? products : products.filter((p) => p.category === filter);
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        setErr("");
+       const res = await fetch(`${API_URL}/products`);
+        const data: ApiProduct[] = await res.json();
+        setItems(data);
+
+        if (!res.ok) throw new Error((data as any)?.error || "Failed to load products");
+        setItems(data);
+      } catch (e: any) {
+        setErr(e?.message || "Failed to load products");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const filteredProducts = useMemo(() => {
+    if (filter === "all") return items;
+    // Backend names: "Hair Care", "Body Care", "Face Care" → filter by substring
+    const needle = filter.toLowerCase(); // "hair" | "body" | "face"
+    return items.filter((p) => (p.category?.name || "").toLowerCase().includes(needle));
+  }, [items, filter]);
 
   const sortedProducts = useMemo(() => {
     const list = [...filteredProducts];
-    if (sort === "priceLow") {
-      return list.sort(
-        (a, b) => (a.variants?.[0]?.price ?? 0) - (b.variants?.[0]?.price ?? 0)
-      );
-    }
-    if (sort === "priceHigh") {
-      return list.sort(
-        (a, b) => (b.variants?.[0]?.price ?? 0) - (a.variants?.[0]?.price ?? 0)
-      );
-    }
+    if (sort === "priceLow") return list.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+    if (sort === "priceHigh") return list.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
     if (sort === "newest") {
-      // Sort by createdAt desc if present, else by id as fallback
       return list.sort((a, b) => {
-        const aKey = (a as any).createdAt ? Date.parse((a as any).createdAt) : 0;
-        const bKey = (b as any).createdAt ? Date.parse((b as any).createdAt) : 0;
-        if (aKey !== 0 || bKey !== 0) return bKey - aKey;
-        return String(b.id).localeCompare(String(a.id));
+        const aKey = a.createdAt ? Date.parse(a.createdAt) : 0;
+        const bKey = b.createdAt ? Date.parse(b.createdAt) : 0;
+        return bKey - aKey;
       });
     }
-    return list; // featured: keep incoming order
+    return list; // featured
   }, [filteredProducts, sort]);
 
   return (
@@ -145,84 +174,91 @@ const Shop = () => {
           </Select>
         </div>
 
+        {/* Loading / Error */}
+        {loading && <p className="text-center text-muted-foreground">...</p>}
+        {err && !loading && <p className="text-center text-red-500">{err}</p>}
+
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {sortedProducts.map((product, index) => {
-            const name = language === "ar" ? product.name_ar : product.name_he;
-            const short = language === "ar" ? product.short_ar : product.short_he;
-            const price = product.variants?.[0]?.price ?? 0;
-            const img = product.images?.[0] ?? "/placeholder.svg";
-            const rating = Math.floor(product.rating?.avg ?? 0);
-            const count = product.rating?.count ?? 0;
+        {!loading && !err && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {sortedProducts.map((product, index) => {
+              const name = product.name;
+              const short = product.description || "";
+              const price = product.price ?? 0;
+              const img = `${API_URL}/assets/products/${product.imageFile}`;
+              const rating = Math.floor(product.rating?.avg ?? 0);
+              const count = product.rating?.count ?? 0;
 
-            return (
-              <Card
-                key={product.id}
-                className="group luxury-card animate-fade-in-up"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="relative overflow-hidden aspect-square">
-                  <img
-                    src={img}
-                    alt={name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                  />
+              return (
+                <Card
+                  key={product._id}
+                  className="group luxury-card animate-fade-in-up"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="relative overflow-hidden aspect-square">
+                    <img
+                      src={img}
+                      alt={name}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/placeholder.svg";
+                      }}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
 
-                  {product.badges && product.badges.length > 0 && (
-                    <div className="absolute top-4 right-4 flex flex-col gap-2">
-                      {product.badges.map((badge, i) => (
-                        <Badge key={i} className="bg-primary text-primary-foreground">
-                          {badge}
-                        </Badge>
-                      ))}
+                    {product.badges && product.badges.length > 0 && (
+                      <div className="absolute top-4 right-4 flex flex-col gap-2">
+                        {product.badges.map((badge, i) => (
+                          <Badge key={i} className="bg-primary text-primary-foreground">
+                            {badge}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Link to={`/product/${product._id}`}>
+                        <Button className="gold-glow">{c.quickView}</Button>
+                      </Link>
                     </div>
-                  )}
-
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Link to={`/product/${product.id}`}>
-                      <Button className="gold-glow">{c.quickView}</Button>
-                    </Link>
                   </div>
-                </div>
 
-                <CardContent className="p-6">
-                  <h3 className="font-heading font-semibold text-lg mb-2">{name}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{short}</p>
+                  <CardContent className="p-6">
+                    <h3 className="font-heading font-semibold text-lg mb-2">{name}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">{short}</p>
 
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < rating ? "fill-primary text-amber-400" : "text-muted"
-                          }`}
-                        />
-                      ))}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${
+                              i < rating ? "fill-primary text-amber-400" : "text-muted"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs text-muted-foreground">({count})</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">({count})</span>
-                  </div>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-amber-400">
-                      {price} ₪
-                    </span>
-                    <Link to={`/product/${product.id}`}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-primary text-primary hover:bg-amber-400 hover:text-primary-foreground transition-all duration-300"
-                      >
-                        {c.addToCart}
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold text-amber-400">{price} ₪</span>
+                      <Link to={`/product/${product._id}`}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-primary text-primary hover:bg-amber-400 hover:text-primary-foreground transition-all duration-300"
+                        >
+                          {c.addToCart}
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
