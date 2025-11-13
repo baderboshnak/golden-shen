@@ -87,7 +87,7 @@ const ProductDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Images */}
           <div className="space-y-4 animate-fade-in">
-            <div className="aspect-square overflow-hidden rounded-lg border gold-border">
+            <div className="aspect-square overflow-hidden rounded-lg border border-amber-400">
               <img
                 src={product.images[0]}
                 alt={language === "ar" ? product.name_ar : product.name_he}
@@ -109,7 +109,7 @@ const ProductDetail = () => {
 
           {/* Product Info */}
           <div className="animate-fade-in-up">
-            <h1 className="text-4xl font-heading font-bold mb-2 gold-gradient">
+            <h1 className="text-4xl font-heading font-bold mb-2 text-amber-400">
               {language === "ar" ? product.name_ar : product.name_he}
             </h1>
             <p className="text-xl text-muted-foreground mb-6">
@@ -118,7 +118,7 @@ const ProductDetail = () => {
 
             {/* Price */}
             <div className="mb-8">
-              <span className="text-4xl font-bold text-primary">
+              <span className="text-4xl font-bold text-amber-400">
                 {product.variants[0].price} ₪
               </span>
             </div>
@@ -147,14 +147,14 @@ const ProductDetail = () => {
 
             {/* Actions */}
             <div className="flex gap-4 mb-8">
-              <Button size="lg" className="flex-1 gold-glow" onClick={handleAddToCart}>
+              <Button size="lg" className="flex-1 bg-amber-400" onClick={handleAddToCart}>
                 <ShoppingCart className="ml-2 h-5 w-5" />
                 {c.addToCart}
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                className="border-primary text-primary hover:bg-amber-400 hover:text-primary-foreground"
               >
                 <Heart className="h-5 w-5" />
               </Button>
@@ -203,7 +203,7 @@ const ProductDetail = () => {
 
         {/* Related Products */}
         <section className="mt-20">
-          <h2 className="text-3xl font-heading font-bold mb-8 gold-gradient text-center">
+          <h2 className="text-3xl font-heading font-bold mb-8 text-amber-400 text-center">
             {c.relatedProducts}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -221,7 +221,7 @@ const ProductDetail = () => {
                     <h3 className="font-semibold mb-2">
                       {language === "ar" ? p.name_ar : p.name_he}
                     </h3>
-                    <p className="text-primary font-bold">{p.variants[0].price} ₪</p>
+                    <p className="text-amber-400 font-bold">{p.variants[0].price} ₪</p>
                   </CardContent>
                 </Card>
               </Link>

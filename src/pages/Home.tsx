@@ -104,7 +104,7 @@ const Home = () => {
           }}
         />
         <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-          <h1 className="text-6xl md:text-8xl font-heading font-bold mb-6 gradient-text leading-tight">
+          <h1 className="text-6xl md:text-8xl font-heading font-bold mb-6 text-amber-400 leading-tight">
             {t("hero.title")}
           </h1>
           <p className="text-xl md:text-3xl text-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed font-light">
@@ -113,7 +113,7 @@ const Home = () => {
           <Link to="/shop">
             <Button
               size="lg"
-              className="gold-glow hover:scale-110 transition-all duration-300 px-8 py-6 text-lg animate-pulse-glow"
+              className="bg-amber-400 hover:scale-110 transition-all duration-300 px-8 py-6 text-lg animate-pulse-glow"
             >
               {t("hero.cta")}
             </Button>
@@ -122,9 +122,9 @@ const Home = () => {
       </section>
 
       {/* Talking Video */}
-      <section id="story-video" className="py-24 px-4 bg-card">
-        <div className="container mx-auto max-w-5xl">
-          <p className="text-muted-foreground text-center mb-10">
+      <section id="story-video" className="py-24 px-4 bg-black">
+        <div className="container mx-auto max-w-5xl ">
+          <p className="text-amber-400 text-center text-3xl mb-10 ">
             {language === "ar"
               ? "حديث قصير يعرّفكم على رؤيتنا ومنتجنا المميّز."
               : "מסר קצר על החזון שלנו והמוצר המוביל."}
@@ -167,8 +167,8 @@ const Home = () => {
                 className={`luxury-card group ${isVisible.features ? "animate-reveal-up" : ""}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <CardContent className="p-8 text-center">
-                  <Icon className="h-12 w-12 text-primary mb-4 mx-auto" />
+                <CardContent className="p-8 text-center bg-black border-amber-400 border-2">
+                  <Icon className="h-12 w-12 text-amber-400 mb-4 mx-auto" />
                   <h3 className="font-heading font-semibold text-xl mb-3">
                     {t(["usp.clean", "usp.tested", "usp.cruelty", "usp.secure"][index])}
                   </h3>
@@ -180,9 +180,9 @@ const Home = () => {
       </section>
 
       {/* Products – images zoomed OUT */}
-      <section id="products" className="py-32 px-4 bg-gradient-to-b from-secondary/30 via-secondary/50 to-secondary/30">
+      <section id="products" className="py-32 px-4 bg-black from-secondary/30 via-secondary/50 to-secondary/30">
         <div className="container mx-auto">
-          <h2 className="text-5xl md:text-7xl font-heading font-bold mb-6 gradient-text text-center">
+          <h2 className="text-5xl md:text-7xl font-heading font-bold mb-6 text-amber-400 text-center">
             {language === "ar" ? "منتجاتنا المميزة" : "המוצרים המובילים שלנו"}
           </h2>
         </div>
@@ -192,11 +192,11 @@ const Home = () => {
             {language === "ar" ? "اختيارات خاصة لعناية استثنائية بجمالك" : "בחירות מיוחדות לטיפול יוצא דופן ביופי שלך"}
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
             {catalog.map((p, index) => (
               <Card
                 key={p.id}
-                className={`group luxury-card ${isVisible.products ? "animate-reveal-up" : "opacity-0"}`}
+                className={`group border-2px border-amber-400  luxury-card ${isVisible.products ? "animate-reveal-up" : "opacity-0"}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {/* Centered box with padding to avoid crop */}
@@ -213,9 +213,9 @@ const Home = () => {
                     {language === "ar" ? p.name_ar : p.name_he}
                   </h3>
                   <div className="flex items-center justify-between">
-                    <span className="text-3xl font-bold gradient-text">{p.price} ₪</span>
+                    <span className="text-3xl font-bold text-amber-400">{p.price} ₪</span>
                     <Link to={`/product/${p.id}`}>
-                      <Button size="sm" className="gold-glow">
+                      <Button size="sm" className="bg-amber-400">
                         {t("product.viewDetails")}
                       </Button>
                     </Link>
@@ -230,7 +230,7 @@ const Home = () => {
       {/* Collections – now styled like Products */}
       <section className="py-32 px-4 relative">
         <div className="container mx-auto">
-          <h2 className="text-5xl md:text-7xl font-heading font-bold mb-16 gradient-text text-center animate-fade-in">
+          <h2 className="text-5xl md:text-7xl font-heading font-bold mb-16 text-amber-400 text-center animate-fade-in">
             {language === "ar" ? "تسوقي حسب الاهتمامات" : "קנו לפי עניין"}
           </h2>
 
@@ -257,7 +257,7 @@ const Home = () => {
 
                   <div className="flex items-center justify-center">
                     <Link to="/shop">
-                      <Button size="sm" className="gold-glow">
+                      <Button size="sm" className="bg-amber-400">
                         {language === "ar" ? "تسوّقي الآن" : "קנו עכשיו"}
                       </Button>
                     </Link>

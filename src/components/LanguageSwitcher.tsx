@@ -10,7 +10,7 @@ export const LanguageSwitcher = () => {
         variant={language === "ar" ? "default" : "outline"}
         size="sm"
         onClick={() => setLanguage("ar")}
-        className="font-body transition-all duration-300 hover:gold-glow"
+        className="font-body transition-all duration-300 hover:bg-amber-400"
       >
         عربي
       </Button>
@@ -18,7 +18,7 @@ export const LanguageSwitcher = () => {
         variant={language === "he" ? "default" : "outline"}
         size="sm"
         onClick={() => setLanguage("he")}
-        className="font-body transition-all duration-300 hover:gold-glow"
+        className="font-body transition-all duration-300 hover:bg-amber-400"
       >
         עברית
       </Button>

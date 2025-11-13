@@ -82,7 +82,7 @@ const Shop = () => {
       <div className="container mx-auto">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 gold-gradient">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-amber-400">
             {c.title}
           </h1>
           <p className="text-muted-foreground text-lg">{c.subtitle}</p>
@@ -105,7 +105,7 @@ const Shop = () => {
               variant={filter === "hair" ? "default" : "outline"}
               onClick={() => setFilter("hair")}
               className={`transition-all duration-300 ${
-                filter === "hair" ? "gold-glow" : "border-primary/30 hover:border-primary"
+                filter === "hair" ? "bg-amber-400" : "border-primary/30 hover:border-primary"
               }`}
             >
               {c.hair}
@@ -115,7 +115,7 @@ const Shop = () => {
               variant={filter === "body" ? "default" : "outline"}
               onClick={() => setFilter("body")}
               className={`transition-all duration-300 ${
-                filter === "body" ? "gold-glow" : "border-primary/30 hover:border-primary"
+                filter === "body" ? "bg-amber-400" : "border-primary/30 hover:border-primary"
               }`}
             >
               {c.body}
@@ -125,7 +125,7 @@ const Shop = () => {
               variant={filter === "face" ? "default" : "outline"}
               onClick={() => setFilter("face")}
               className={`transition-all duration-300 ${
-                filter === "face" ? "gold-glow" : "border-primary/30 hover:border-primary"
+                filter === "face" ? "bg-amber-400" : "border-primary/30 hover:border-primary"
               }`}
             >
               {c.face}
@@ -196,7 +196,7 @@ const Shop = () => {
                         <Star
                           key={i}
                           className={`h-4 w-4 ${
-                            i < rating ? "fill-primary text-primary" : "text-muted"
+                            i < rating ? "fill-primary text-amber-400" : "text-muted"
                           }`}
                         />
                       ))}
@@ -205,14 +205,14 @@ const Shop = () => {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-primary">
+                    <span className="text-2xl font-bold text-amber-400">
                       {price} ₪
                     </span>
                     <Link to={`/product/${product.id}`}>
                       <Button
                         size="sm"
                         variant="outline"
-                        className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                        className="border-primary text-primary hover:bg-amber-400 hover:text-primary-foreground transition-all duration-300"
                       >
                         {c.addToCart}
                       </Button>

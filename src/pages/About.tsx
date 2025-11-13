@@ -105,7 +105,7 @@ const About = () => {
       <div className="container mx-auto max-w-6xl">
         {/* Hero */}
         <div className="text-center mb-20 animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-heading font-bold mb-4 gold-gradient">
+          <h1 className="text-5xl md:text-7xl font-heading font-bold mb-4 text-amber-400">
             {t.title}
           </h1>
           <p className="text-xl text-muted-foreground">{t.subtitle}</p>
@@ -146,7 +146,7 @@ const About = () => {
 
         {/* Values */}
         <section className="mb-24">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-center mb-12 gold-gradient animate-fade-in">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-center mb-12 text-amber-400 animate-fade-in">
             {t.valuesTitle}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -174,7 +174,7 @@ const About = () => {
 
         {/* Stats */}
         <section className="mb-24 bg-gradient-to-b from-secondary/30 via-secondary/50 to-secondary/30 -mx-4 px-4 py-20 md:-mx-8 md:px-8">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-center mb-12 gold-gradient animate-fade-in">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-center mb-12 text-amber-400 animate-fade-in">
             {t.statsTitle}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
@@ -200,7 +200,7 @@ const About = () => {
             <CardContent className="p-12">
               <div className="max-w-3xl mx-auto text-center">
                 <Heart className="h-16 w-16 text-primary mx-auto mb-6" />
-                <h2 className="text-4xl font-heading font-bold mb-6 gold-gradient">
+                <h2 className="text-4xl font-heading font-bold mb-6 text-amber-400">
                   {t.sustainability}
                 </h2>
                 <p className="text-xl text-muted-foreground leading-relaxed">
@@ -213,7 +213,7 @@ const About = () => {
 
         {/* Team Section */}
         <section className="text-center">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 gold-gradient animate-fade-in">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-amber-400 animate-fade-in">
             {t.teamTitle}
           </h2>
           <p className="text-xl text-muted-foreground mb-12 animate-fade-in-up">
