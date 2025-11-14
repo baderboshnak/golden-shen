@@ -14,7 +14,16 @@ export const Navbar = () => {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
-
+ const isAdmin = (() => {
+    try {
+      const raw = localStorage.getItem("user");
+      if (!raw) return false;
+      const u = JSON.parse(raw);
+      return u.role === "admin";
+    } catch {
+      return false;
+    }
+  })();
   // Check login state on mount and whenever route or storage changes
   useEffect(() => {
     const checkLogin = () => {
@@ -61,6 +70,8 @@ export const Navbar = () => {
           {/* Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <Link to="/" className="text-foreground hover:text-primary transition-all">{t("nav.home")}</Link>
+              {isAdmin && <Link to="/admin" className="text-foreground hover:text-primary transition-all">{t("nav.admin")}</Link>} 
+             {loggedIn && <Link to="/profile" className="text-foreground hover:text-primary transition-all">{t("nav.profile")}</Link> }    
             <Link to="/shop" className="text-foreground hover:text-primary transition-all">{t("nav.shop")}</Link>
             <Link to="/about" className="text-foreground hover:text-primary transition-all">{t("nav.about")}</Link>
             <Link to="/contact" className="text-foreground hover:text-primary transition-all">{t("nav.contact")}</Link>

@@ -71,12 +71,14 @@ const Cart = () => {
               >
                 <CardContent className="p-6">
                   <div className="flex gap-6">
-                    <div className="w-24 h-24 rounded-md overflow-hidden border gold-border flex-shrink-0">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-24 h-24 rounded-md overflow-hidden border gold-border flex-shrink-0 bg-black">
+                   <img
+  src={item.image}
+  alt={item.name}
+  className="w-full h-full object-contain p-4"
+  loading="lazy"
+/>
+
                     </div>
 
                     <div className="flex-1">

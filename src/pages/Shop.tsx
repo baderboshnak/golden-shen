@@ -196,15 +196,18 @@ const Shop = () => {
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="relative overflow-hidden aspect-square">
-                    <img
-                      src={img}
-                      alt={name}
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "/placeholder.svg";
-                      }}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                    />
+                 <div className="relative aspect-square flex items-center justify-center bg-background p-4 overflow-hidden bg-black">
+  <img
+    src={img}
+    alt={name}
+    onError={(e) => {
+      (e.currentTarget as HTMLImageElement).src = "/placeholder.svg";
+    }}
+    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+    loading="lazy"
+  />
+</div>
+
 
                     {product.badges && product.badges.length > 0 && (
                       <div className="absolute top-4 right-4 flex flex-col gap-2">

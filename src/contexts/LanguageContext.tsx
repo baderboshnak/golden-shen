@@ -27,6 +27,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.contact": "تواصل معنا",
     "nav.blog": "المدونة",
     "nav.logout": "خروج",
+    "nav.admin":"منهيل",
+    "nav.profile":"صفحتي",
 
     // Home Hero
     "hero.title": "ارفعي مستوى روتين العناية ببشرتك",
@@ -79,6 +81,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.contact": "צור קשר",
     "nav.blog": "בלוג",
     "nav.logout": "יציאה",
+    "nav.admin":"מנהל",
+    "nav.profile":"פרופיל שלי",
 
     // Home Hero
     "hero.title": "העלו את שגרת הטיפוח שלכם",

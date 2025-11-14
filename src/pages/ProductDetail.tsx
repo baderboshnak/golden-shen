@@ -30,11 +30,38 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [err, setErr] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
 
+      const checkLogin = () => {
+      const user = localStorage.getItem("user");
+      const token = localStorage.getItem("token");
+
+      if (user && token) {
+        setLoggedIn(true);
+        try {
+          const parsed = JSON.parse(user);
+          setUsername(parsed.username || "");
+        } catch {
+          setUsername("");
+        }
+      } else {
+        setLoggedIn(false);
+        setUsername("");
+      }
+    };
+
+ useEffect(() => {
+   
+        checkLogin();
+       
+   
+  }, []);
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
+        checkLogin();
         setErr("");
         const res = await fetch(`${API_URL}/products/${id}`);
         const data = await res.json();
@@ -64,6 +91,9 @@ export default function ProductDetail() {
   const img = `${API_URL}/assets/products/${product.imageFile}`;
 
   const handleAddToCart = async () => {
+
+    console.log("AA",loggedIn)
+    if(!loggedIn) alert ("need to log in first")
     await addItem(product._id, quantity);   // send real Mongo _id
     toast({ title: language === "ar" ? "تمت الإضافة إلى السلة!" : "נוסף לעגלה!", duration: 2000 });
   };
@@ -76,8 +106,12 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Image */}
           <div className="space-y-4 animate-fade-in">
-            <div className="aspect-square overflow-hidden rounded-lg border border-amber-400">
-              <img src={img} alt={product.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+            <div className="aspect-square overflow-hidden rounded-lg border border-amber-400 bg-black">
+<img
+  src={img}
+  alt={product.name}
+  className="w-full h-full object-contain p-4 hover:scale-110 transition-transform duration-500"
+/>
             </div>
           </div>
 

@@ -244,14 +244,15 @@ useEffect(() => {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {/* Centered box with padding to avoid crop */}
-                <div className="relative aspect-square flex items-center justify-center bg-background p-4">
-                  <img
-                    src={img}
-                    alt={name}
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/placeholder.svg"; }}
-                    className="w-full h-full object-fill scale-120 transition-transform duration-700 group-hover:scale-125 b-2 b-amber-400"
-                  />
-                </div>
+               <div className="relative aspect-square flex items-center justify-center bg-background p-3 overflow-hidden bg-black">
+  <img
+    src={img}
+    alt={name}
+    onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/placeholder.svg"; }}
+    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+  />
+</div>
+
 
                 <CardContent className="p-8">
                   <h3 className="font-heading font-semibold text-xl mb-2">
