@@ -160,8 +160,8 @@ export default function ProductDetail() {
             <Tabs defaultValue="description" className="mt-8">
               <TabsList className="grid w-full grid-cols-3 bg-secondary">
                 <TabsTrigger value="description">{language === "ar" ? "الوصف" : "תיאור"}</TabsTrigger>
-                <TabsTrigger value="howToUse">{language === "ar" ? "طريقة الاستخدام" : "אופן השימוש"}</TabsTrigger>
-                <TabsTrigger value="ingredients">{language === "ar" ? "المكونات" : "מרכיבים"}</TabsTrigger>
+                {/* <TabsTrigger value="howToUse">{language === "ar" ? "طريقة الاستخدام" : "אופן השימוש"}</TabsTrigger>
+                <TabsTrigger value="ingredients">{language === "ar" ? "المكونات" : "מרכיבים"}</TabsTrigger> */}
               </TabsList>
               <TabsContent value="description" className="mt-6">
                 <p className="text-muted-foreground leading-relaxed">{product.description || ""}</p>

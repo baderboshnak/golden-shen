@@ -230,19 +230,19 @@ const Shop = () => {
                     <h3 className="font-heading font-semibold text-lg mb-2">{name}</h3>
                     <p className="text-sm text-muted-foreground mb-4">{short}</p>
 
-                    <div className="flex items-center gap-2 mb-4">
+                    {/* <div className="flex items-center gap-2 mb-4">
                       <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${
-                              i < rating ? "fill-primary text-amber-400" : "text-muted"
-                            }`}
-                          />
-                        ))}
+                        { {[...Array(5)].map((_, i) => (
+                          // <Star
+                          //   key={i}
+                          //   className={`h-4 w-4 ${
+                          //     i < rating ? "fill-primary text-amber-400" : "text-muted"
+                          //   }`}
+                          // />
+                        ))} }
                       </div>
                       <span className="text-xs text-muted-foreground">({count})</span>
-                    </div>
+                    </div> */}
 
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold text-amber-400">{price} ₪</span>

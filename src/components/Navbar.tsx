@@ -5,7 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-
+import logo from "../assets/logo.png";
 export const Navbar = () => {
   const { t } = useLanguage();
   const { itemCount } = useCart();
@@ -62,9 +62,15 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
+         <img
+  src={logo}
+  alt="Company Logo"
+  className="w-20 h-20 object-contain"
+/>
             <h1 className="text-2xl md:text-3xl font-heading font-bold text-amber-400">
               LUXURY SKIN
             </h1>
+           
           </Link>
 
           {/* Navigation */}
