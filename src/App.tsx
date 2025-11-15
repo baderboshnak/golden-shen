@@ -19,6 +19,7 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfilePage from "./pages/ProfilePage";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <div className="min-h-screen flex flex-col">
+               <ScrollToTop />
               <Navbar />
               <main className="flex-1">
                 <Routes>

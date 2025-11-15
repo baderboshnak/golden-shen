@@ -1,12 +1,25 @@
 // src/contexts/CartContext.tsx
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { API_URL, getCart, addToCart, updateCartItem, removeCartItem, checkoutOrder } from "@/lib/api";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  API_URL,
+  getCart,
+  addToCart,
+  updateCartItem,
+  removeCartItem,
+  checkoutOrder,
+} from "@/lib/api";
 
 type CartItemUI = {
-  id: string;           // product _id
+  id: string; // product _id
   name: string;
   price: number;
-  image: string;        // `${API_URL}/assets/products/${imageFile}`
+  image: string; // `${API_URL}/assets/products/${imageFile}`
   quantity: number;
 };
 
@@ -23,14 +36,19 @@ type CartContextType = {
 };
 
 const CartContext = createContext<CartContextType>({} as any);
+
 const getToken = () => localStorage.getItem("token") || "";
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [items, setItems] = useState<CartItemUI[]>([]);
   const [loading, setLoading] = useState(false);
-const [token, setToken] = useState<string>(getToken());
+  const [token, setToken] = useState<string>(getToken());
 
   const mapFromApi = (data: any): CartItemUI[] => {
-    // Expected backend cart shape: { items: [{ product: {_id, name, price, imageFile}, quantity }] }
+    // Expected backend cart shape:
+    // { items: [{ product: {_id, name, price, imageFile}, quantity }] }
     const arr = Array.isArray(data?.items) ? data.items : [];
     return arr
       .filter((it: any) => it?.product)
@@ -38,31 +56,20 @@ const [token, setToken] = useState<string>(getToken());
         id: it.product._id,
         name: it.product.name,
         price: Number(it.product.price || 0),
-        image: `${API_URL}/assets/products/${it.product.imageFile || "placeholder.jpg"}`,
+        image: `${API_URL}/assets/products/${
+          it.product.imageFile || "placeholder.jpg"
+        }`,
         quantity: Number(it.quantity || 0),
       }));
   };
-const onAuthChanged = () => {
-  const t = getToken();
-  setToken(t);
-  if (t) refresh(); else setItems([]);
-};
 
-useEffect(() => {
-  const onAuth = () => refresh();
-  window.addEventListener("auth:login", onAuth);
-  window.addEventListener("auth:logout", onAuth);
-  return () => {
-    window.removeEventListener("auth:login", onAuth);
-    window.removeEventListener("auth:logout", onAuth);
-  };
-}, []);
-
-useEffect(() => {
-  if (token) refresh();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [token]);
   const refresh = async () => {
+    if (!getToken()) {
+      // No token, ensure empty cart in UI
+      setItems([]);
+      return;
+    }
+
     setLoading(true);
     try {
       const data = await getCart();
@@ -74,9 +81,35 @@ useEffect(() => {
     }
   };
 
+  // React to login/logout events + changes in localStorage
   useEffect(() => {
-    refresh();
+    const handleAuthChanged = () => {
+      const t = getToken();
+      setToken(t);
+      if (!t) {
+        setItems([]); // clear cart on logout
+      }
+    };
+
+    window.addEventListener("auth:changed", handleAuthChanged);
+    window.addEventListener("storage", handleAuthChanged);
+
+    return () => {
+      window.removeEventListener("auth:changed", handleAuthChanged);
+      window.removeEventListener("storage", handleAuthChanged);
+    };
   }, []);
+
+  // Whenever token changes (login / logout / refresh), fetch cart if logged in
+  useEffect(() => {
+    if (!token) {
+      setItems([]);
+      return;
+    }
+    // logged in → fetch cart once
+    refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   const addItem = async (productId: string, quantity = 1) => {
     setLoading(true);
@@ -115,14 +148,16 @@ useEffect(() => {
   );
 
   const total = useMemo(
-    () => Number(items.reduce((sum, it) => sum + it.price * it.quantity, 0).toFixed(2)),
+    () =>
+      Number(
+        items.reduce((sum, it) => sum + it.price * it.quantity, 0).toFixed(2)
+      ),
     [items]
   );
 
   const checkout = async () => {
     const data = await checkoutOrder();
-    // Optionally clear the cart after successful checkout:
-    await refresh();
+    await refresh(); // reload cart after successful checkout
     return { orderId: data?.orderId };
   };
 
@@ -138,7 +173,9 @@ useEffect(() => {
     checkout,
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>{children}</CartContext.Provider>
+  );
 };
 
 export const useCart = () => useContext(CartContext);
